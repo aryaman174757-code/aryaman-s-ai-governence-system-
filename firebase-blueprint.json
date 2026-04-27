@@ -1,0 +1,64 @@
+{
+  "entities": {
+    "GovernanceDecision": {
+      "title": "Governance Decision",
+      "description": "Log of an AI governance decision including risk score and policy outcome.",
+      "type": "object",
+      "properties": {
+        "prompt": { "type": "string" },
+        "response": { "type": "string" },
+        "riskScore": { "type": "number" },
+        "factors": {
+          "type": "object",
+          "properties": {
+            "x1": { "type": "number" },
+            "x2": { "type": "number" },
+            "x3": { "type": "number" },
+            "x4": { "type": "number" }
+          }
+        },
+        "intent": {
+          "type": "object",
+          "properties": {
+            "goal": { "type": "string" },
+            "method": { "type": "string" },
+            "target": { "type": "string" },
+            "goalRisk": { "type": "number" },
+            "methodRisk": { "type": "number" },
+            "targetRisk": { "type": "number" },
+            "aggregateRisk": { "type": "number" }
+          }
+        },
+        "simulationResults": { "type": "object" },
+        "decision": { "type": "string", "enum": ["Allow", "Warn", "Block"] },
+        "reason": { "type": "string" },
+        "mode": { "type": "string", "enum": ["Strict", "Balanced", "Open"] },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "userId": { "type": "string" },
+        "approvedByHuman": { "type": "boolean" },
+        "exported": { "type": "boolean" }
+      },
+      "required": ["prompt", "riskScore", "decision", "timestamp"]
+    },
+    "ThreatPattern": {
+      "title": "Threat Pattern",
+      "description": "Adversarial pattern for threat intelligence.",
+      "type": "object",
+      "properties": {
+        "pattern": { "type": "string" },
+        "type": { "type": "string" },
+        "weight": { "type": "number" }
+      }
+    }
+  },
+  "firestore": {
+    "/decisions/{decisionId}": {
+      "schema": "GovernanceDecision",
+      "description": "Historical log of governance decisions."
+    },
+    "/threat_patterns/{patternId}": {
+      "schema": "ThreatPattern",
+      "description": "Real-time threat intelligence patterns."
+    }
+  }
+}

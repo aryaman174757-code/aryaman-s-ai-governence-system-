@@ -1,0 +1,45 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Reuseable helpers
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Decisions collection - Simplified for demo functionality
+    match /decisions/{decisionId} {
+      allow read, list: if true;
+      allow create: if true;
+      allow update: if true; 
+      allow delete: if false;
+    }
+
+    // Threat patterns
+    match /threat_patterns/{patternId} {
+      allow read: if true;
+      allow write: if false; 
+    }
+
+    // Config collection
+    match /config/weights {
+      allow read: if true;
+      allow write: if false; 
+    }
+
+    // Test collection for boot check
+    match /test/connection {
+      allow read: if true;
+    }
+
+    // Default deny catch-all at the bottom
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
